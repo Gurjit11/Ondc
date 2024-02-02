@@ -1,7 +1,7 @@
 import AppRoutes from "../Routes";
 function PageContent() {
   return (
-    <div className="pageContent">
+    <div className="mt-16">
       <AppRoutes />
     </div>
   );
