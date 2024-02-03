@@ -1,4 +1,9 @@
-import { HomeFilled, ShoppingCartOutlined } from "@ant-design/icons";
+import {
+  HomeFilled,
+  ProfileOutlined,
+  ShoppingCartOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import {
   Badge,
   Button,
@@ -9,23 +14,28 @@ import {
   InputNumber,
   Menu,
   message,
+  Switch,
   Table,
   Typography,
 } from "antd";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { getCart } from "../../API";
+import { ThemeContext } from "../../Provider/ThemeProvider";
+import AutoCompleteSearch from "../Autocomplete";
 
 function AppHeader() {
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useContext(ThemeContext);
 
   const onMenuClick = (item) => {
     navigate(`/${item.key}`);
   };
   return (
-    <div className="appHeader">
+    <div className="px-5 items-center flex fixed z-10 w-full backdrop-blur-md bg-white/70 top-0 justify-between">
       <Menu
-        className="appMenu"
+        theme={theme}
+        className=" font-semibold h-12"
         onClick={onMenuClick}
         mode="horizontal"
         items={[
@@ -83,12 +93,33 @@ function AppHeader() {
           },
         ]}
       />
-      <Typography.Title>Aamir Store</Typography.Title>
-      <AppCart />
+      <div className=" flex items-center justify-center gap-6 font-bold">
+        <span>
+          <AutoCompleteSearch />
+        </span>
+        <span className="text-2xl italic">SuperStore</span>
+      </div>
+      {/* <div className="flex justify-between items-center gap-6"> */}
+      <span className="flex gap-7 justify-center items-center">
+        <AppCart />
+        <Link to="/profile">
+          <UserOutlined className="text-xl" />
+        </Link>
+      </span>
+      {/* <Switch
+          checked={theme === "dark"}
+          onChange={toggleTheme}
+          checkedChildren="Dark"
+          unCheckedChildren="Light"
+        /> */}
+      {/* </div> */}
     </div>
   );
 }
+
 function AppCart() {
+  const navigate = useNavigate();
+
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
   const [checkoutDrawerOpen, setCheckoutDrawerOpen] = useState(false);
   const [cartItems, setCartItems] = useState([]);
@@ -111,7 +142,7 @@ function AppCart() {
           setCartDrawerOpen(true);
         }}
         count={cartItems.length}
-        className="soppingCartIcon"
+        className="text-2xl"
       >
         <ShoppingCartOutlined />
       </Badge>
@@ -121,7 +152,8 @@ function AppCart() {
           setCartDrawerOpen(false);
         }}
         title="Your Cart"
-        contentWrapperStyle={{ width: 500 }}
+        width={500}
+        // contentWrapperStyle={{ width: 500 }}
       >
         <Table
           pagination={false}
@@ -175,11 +207,13 @@ function AppCart() {
             return <span>Total: ${total}</span>;
           }}
         />
+        {console.log(cartItems)}
         <Button
           onClick={() => {
-            setCheckoutDrawerOpen(true);
+            navigate("/order");
           }}
-          type="primary"
+          type="default"
+          className="bg-blue-500 text-white hover:bg-white"
         >
           Checkout Your Cart
         </Button>
@@ -237,7 +271,7 @@ function AppCart() {
           <Typography.Paragraph type="secondary">
             More methods coming soon
           </Typography.Paragraph>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" className="bg-blue-500" htmlType="submit">
             {" "}
             Confirm Order
           </Button>
