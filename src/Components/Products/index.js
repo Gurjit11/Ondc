@@ -1,11 +1,5 @@
 import {
-  Badge,
-  Button,
-  Card,
-  Image,
   List,
-  message,
-  Rate,
   Spin,
   Typography,
   Select,
@@ -13,10 +7,12 @@ import {
   Input,
   Space,
   Slider,
+  FloatButton,
 } from "antd";
 import { useEffect, useState } from "react";
 import { addToCart, getAllProducts, getProductsByCategory } from "../../API";
 import { useParams } from "react-router-dom";
+import ProductCard from "./Card";
 
 function Products() {
   const [loading, setLoading] = useState(false);
@@ -79,7 +75,7 @@ function Products() {
 
   return (
     <div className="flex">
-      <div className="w-[600px] p-5 border-r border-gray-300">
+      <div className="min-w-[300px] pt-[50px] sticky max-h-[600px] top-0 p-5 border-r border-gray-300">
         <div className="text-xl font-bold mb-2 border-b border-gray-400">
           Featured
         </div>
@@ -153,82 +149,27 @@ function Products() {
       </div>
       <div>
         <List
-          loading={loading}
+          loading={loading && <Spin size="large" />}
           grid={{ column: 3 }}
           renderItem={(product, index) => {
-            return (
-              <Badge.Ribbon
-                className="translate-x-[-20px] "
-                text={`${product.discountPercentage}% Off`}
-                color="pink"
-              >
-                <Card
-                  className="m-5 p-5 shadow-2xl "
-                  title={product.title}
-                  key={index}
-                  cover={
-                    <Image
-                      className=" object-contain"
-                      height={200}
-                      src={product.thumbnail}
-                    />
-                  }
-                  actions={[
-                    <Rate allowHalf disabled value={product.rating} />,
-                    <AddToCartButton item={product} />,
-                  ]}
-                >
-                  <Card.Meta
-                    title={
-                      <Typography.Paragraph>
-                        Price: ${product.price}{" "}
-                        <Typography.Text delete type="danger">
-                          $
-                          {parseFloat(
-                            product.price +
-                              (product.price * product.discountPercentage) / 100
-                          ).toFixed(2)}
-                        </Typography.Text>
-                      </Typography.Paragraph>
-                    }
-                    description={
-                      <Typography.Paragraph
-                        ellipsis={{ rows: 2, expandable: true, symbol: "more" }}
-                      >
-                        {product.description}
-                      </Typography.Paragraph>
-                    }
-                  ></Card.Meta>
-                </Card>
-              </Badge.Ribbon>
-            );
+            return <ProductCard product={product} key={index} />;
           }}
           dataSource={getSortedItems()}
         ></List>
+        <FloatButton.BackTop
+          style={{
+            width: 60,
+            height: 60,
+            fontSize: 30,
+            zIndex: 10,
+            textSizeAdjust: "auto",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        />
       </div>
     </div>
   );
 }
 
-function AddToCartButton({ item }) {
-  const [loading, setLoading] = useState(false);
-  const addProductToCart = () => {
-    setLoading(true);
-    addToCart(item.id).then((res) => {
-      message.success(`${item.title} has been added to cart!`);
-      setLoading(false);
-    });
-  };
-  return (
-    <Button
-      type="link"
-      onClick={() => {
-        addProductToCart();
-      }}
-      loading={loading}
-    >
-      Add to Cart
-    </Button>
-  );
-}
 export default Products;

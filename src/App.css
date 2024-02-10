@@ -23,3 +23,19 @@
   .certain-category-search-dropdown .ant-select-dropdown-menu {
     max-height: 300px;
   }
+
+  .looping-gradient-background {
+    width: 100%; /* Set the width of the container */
+    height: 100vh; /* Set the height of the container */
+    animation: moveGradient 0.1s linear infinite; /* Apply the animation */
+    background: linear-gradient(to right, #ff00ff, #800080); /* Define your gradient */
+  }
+  
+  @keyframes moveGradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 100% 50%;
+    }
+  }
