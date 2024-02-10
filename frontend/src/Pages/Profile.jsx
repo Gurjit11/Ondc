@@ -9,15 +9,12 @@ import {
   Form,
   Input,
   InputNumber,
-  Radio,
-  Select,
-  Slider,
-  Switch,
-  TreeSelect,
-  Upload,
+  Modal,
+  Card,
 } from "antd";
 import { useUser } from "@clerk/clerk-react";
-const { RangePicker } = DatePicker;
+import Title from "antd/es/typography/Title";
+import locale from "antd/lib/locale/en_US";
 const { TextArea } = Input;
 const normFile = (e) => {
   if (Array.isArray(e)) {
@@ -29,123 +26,124 @@ const normFile = (e) => {
 console.log(normFile());
 const Profile = () => {
   const { isSignedIn, user, isLoaded } = useUser();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "John Doe",
+    email: "john@example.com",
+    address: "123 Main St, City, Country",
+    phone: "123-456-7890",
+    dob: "1990-01-01",
+    bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  });
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleSave = (values) => {
+    setFormData(values);
+    setIsModalVisible(false);
+  };
+  const onChange = (date, dateString) => {
+    console.log(date, dateString);
+  };
   return (
-    <div className="bg-blue-500 p-20">
-      <div className="p-20 pt-10 rounded-xl bg-white ">
-        <div className="text-blue-500 text-3xl mb-10 font-bold">
-          Hi {user?.username}!
-        </div>
-        <Form
-          labelCol={{
-            span: 4,
-          }}
-          wrapperCol={{
-            span: 14,
-          }}
-          layout="horizontal"
-          style={{
-            maxWidth: 600,
-          }}
-        >
-          <Form.Item label="Checkbox" name="disabled" valuePropName="checked">
-            <Checkbox>Checkbox</Checkbox>
-          </Form.Item>
-          <Form.Item label="Radio">
-            <Radio.Group>
-              <Radio value="apple"> Apple </Radio>
-              <Radio value="pear"> Pear </Radio>
-            </Radio.Group>
-          </Form.Item>
-          <Form.Item label="Input">
+    <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
+      <Card>
+        <Title level={2}>User Profile</Title>
+        <p>
+          <strong>Name:</strong> {formData.name}
+        </p>
+        <p>
+          <strong>Email:</strong> {formData.email}
+        </p>
+        <p>
+          <strong>Address:</strong> {formData.address}
+        </p>
+        <p>
+          <strong>Phone:</strong> {formData.phone}
+        </p>
+        <p>
+          <strong>Date of Birth:</strong> {formData.dob}
+        </p>
+        <p>
+          <strong>Bio:</strong> {formData.bio}
+        </p>
+        <Button type="primary" onClick={showModal}>
+          Edit Profile
+        </Button>
+      </Card>
+
+      <Modal
+        title="Edit Profile"
+        visible={isModalVisible}
+        onCancel={handleCancel}
+        footer={null}
+      >
+        <Form onFinish={handleSave} initialValues={formData}>
+          <Form.Item
+            label="Name"
+            name="name"
+            rules={[{ required: true, message: "Please input your name!" }]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="Select">
-            <Select>
-              <Select.Option value="demo">Demo</Select.Option>
-            </Select>
-          </Form.Item>
-          <Form.Item label="TreeSelect">
-            <TreeSelect
-              treeData={[
-                {
-                  title: "Light",
-                  value: "light",
-                  children: [
-                    {
-                      title: "Bamboo",
-                      value: "bamboo",
-                    },
-                  ],
-                },
-              ]}
-            />
-          </Form.Item>
-          <Form.Item label="Cascader">
-            <Cascader
-              options={[
-                {
-                  value: "zhejiang",
-                  label: "Zhejiang",
-                  children: [
-                    {
-                      value: "hangzhou",
-                      label: "Hangzhou",
-                    },
-                  ],
-                },
-              ]}
-            />
-          </Form.Item>
-          <Form.Item label="DatePicker">
-            <DatePicker />
-          </Form.Item>
-          <Form.Item label="RangePicker">
-            <RangePicker />
-          </Form.Item>
-          <Form.Item label="InputNumber">
-            <InputNumber />
-          </Form.Item>
-          <Form.Item label="TextArea">
-            <TextArea rows={4} />
-          </Form.Item>
-          <Form.Item label="Switch" valuePropName="checked">
-            <Switch />
-          </Form.Item>
+
           <Form.Item
-            label="Upload"
-            valuePropName="fileList"
-            getValueFromEvent={normFile}
+            label="Email"
+            name="email"
+            rules={[
+              { required: true, message: "Please input your email!" },
+              { type: "email", message: "Please enter a valid email address!" },
+            ]}
           >
-            <Upload action="/upload.do" listType="picture-card">
-              <button
-                style={{
-                  border: 0,
-                  background: "none",
-                }}
-                type="button"
-              >
-                <PlusOutlined />
-                <div
-                  style={{
-                    marginTop: 8,
-                  }}
-                >
-                  Upload
-                </div>
-              </button>
-            </Upload>
+            <Input />
           </Form.Item>
-          <Form.Item label="Button">
-            <Button>Button</Button>
+
+          <Form.Item
+            label="Address"
+            name="address"
+            rules={[{ required: true, message: "Please input your address!" }]}
+          >
+            <Input />
           </Form.Item>
-          <Form.Item label="Slider">
-            <Slider />
+
+          <Form.Item
+            label="Phone"
+            name="phone"
+            rules={[
+              { required: true, message: "Please input your phone number!" },
+            ]}
+          >
+            <Input />
           </Form.Item>
-          <Form.Item label="ColorPicker">
-            <ColorPicker />
+
+          <Form.Item
+            label="Date of Birth"
+            name="dob"
+            rules={[
+              { required: true, message: "Please select your date of birth!" },
+            ]}
+          >
+            <DatePicker locale={locale} style={{ width: "100%" }} />
+            <DatePicker onChange={onChange} needConfirm />
+          </Form.Item>
+
+          <Form.Item label="Bio" name="bio">
+            <Input.TextArea rows={4} />
+          </Form.Item>
+
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Save Changes
+            </Button>
           </Form.Item>
         </Form>
-      </div>
+      </Modal>
     </div>
   );
 };
