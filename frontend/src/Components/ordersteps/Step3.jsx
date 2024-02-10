@@ -5,7 +5,6 @@ import { CartContext } from "../../Provider/CartProvider";
 const Step3 = ({ formData }) => {
   const { cartItems, addToCart, removeFromCart, setCartItems } =
     useContext(CartContext);
-  const userAddress = `${formData.first_name} ${formData.last_name}, ${formData.your_address}, ${formData.city}, ${formData.country_region}, ${formData.postal_code}`;
   return (
     <div className="text-black flex p-10 flex-col items-center leading-3">
       <h1 className="text-3xl font-bold ">Order Details</h1>
@@ -18,7 +17,14 @@ const Step3 = ({ formData }) => {
                 {formData.first_name} {formData.last_name},
               </span>
               <br></br>
-              <span> {formData.your_address}</span>
+              <span className="max-w-[200px] overflow-clip">
+                {" "}
+                {formData.your_address.length > 30 ? (
+                  <span>{formData.your_address.slice(0, 23)}...</span>
+                ) : (
+                  formData.your_address
+                )}
+              </span>
               <br></br>
               <span>
                 {" "}
