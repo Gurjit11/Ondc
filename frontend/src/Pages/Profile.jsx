@@ -16,6 +16,7 @@ import {
   TreeSelect,
   Upload,
 } from "antd";
+import { useUser } from "@clerk/clerk-react";
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 const normFile = (e) => {
@@ -27,11 +28,12 @@ const normFile = (e) => {
 
 console.log(normFile());
 const Profile = () => {
+  const { isSignedIn, user, isLoaded } = useUser();
   return (
     <div className="bg-blue-500 p-20">
       <div className="p-20 pt-10 rounded-xl bg-white ">
         <div className="text-blue-500 text-3xl mb-10 font-bold">
-          Your Profile
+          Hi {user?.username}!
         </div>
         <Form
           labelCol={{

@@ -1,6 +1,8 @@
-import React from "react";
-import { UserOutlined } from "@ant-design/icons";
+import React, { useEffect, useState } from "react";
+import { DollarOutlined, DollarTwoTone, UserOutlined } from "@ant-design/icons";
 import { AutoComplete, Input } from "antd";
+import { getAllProducts } from "../API";
+import { Link } from "react-router-dom";
 const renderTitle = (title) => (
   <span>
     {title}
@@ -16,7 +18,7 @@ const renderTitle = (title) => (
     </a>
   </span>
 );
-const renderItem = (title, count) => ({
+const renderItem = (title, count, id) => ({
   value: title,
   label: (
     <div
@@ -25,9 +27,9 @@ const renderItem = (title, count) => ({
         justifyContent: "space-between",
       }}
     >
-      {title}
+      <Link to={`/product/${id}`}>{title}</Link>
       <span>
-        <UserOutlined /> {count}
+        <DollarTwoTone /> {count}
       </span>
     </div>
   ),
@@ -52,17 +54,29 @@ const options = [
     options: [renderItem("AntDesign design language", 100000)],
   },
 ];
-const AutoCompleteSearch = () => (
-  <AutoComplete
-    popupClassName="certain-category-search-dropdown"
-    popupMatchSelectWidth={500}
-    style={{
-      width: 250,
-    }}
-    options={options}
-    size="large"
-  >
-    <Input.Search size="large" placeholder="input here" />
-  </AutoComplete>
-);
+const AutoCompleteSearch = () => {
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    getAllProducts().then((res) => {
+      setItems(res.products);
+    });
+  }, []);
+  return (
+    <AutoComplete
+      popupClassName="certain-category-search-dropdown"
+      popupMatchSelectWidth={500}
+      style={{
+        width: 250,
+      }}
+      options={items.map((item) => renderItem(item.title, item.price, item.id))}
+      size="large"
+      filterOption={(inputValue, option) =>
+        option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+      }
+    >
+      <Input.Search size="large" placeholder="input here" />
+    </AutoComplete>
+  );
+};
 export default AutoCompleteSearch;

@@ -51,7 +51,7 @@ const Cart = () => {
           setCartDrawerOpen(true);
         }}
         count={cartItems?.length}
-        className="text-2xl"
+        className="text-2xl cursor-pointer"
       >
         <ShoppingCartOutlined />
       </Badge>
@@ -131,76 +131,19 @@ const Cart = () => {
             }}
           />
         )}
-        <Button
-          onClick={() => {
-            setCartDrawerOpen(false);
-            navigate("/order");
-          }}
-          type="default"
-          className="bg-blue-500 text-white hover:bg-white"
-        >
-          Checkout Your Cart
-        </Button>
-      </Drawer>
-      {/* <Drawer
-        open={checkoutDrawerOpen}
-        onClose={() => {
-          setCheckoutDrawerOpen(false);
-        }}
-        title="Confirm Order"
-      >
-        <Form onFinish={onConfirmOrder}>
-          <Form.Item
-            rules={[
-              {
-                required: true,
-                message: "Please enter your full name",
-              },
-            ]}
-            label="Full Name"
-            name="full_name"
+        {cartItems.length === 0 ? null : (
+          <Button
+            onClick={() => {
+              setCartDrawerOpen(false);
+              navigate("/order");
+            }}
+            type="default"
+            className="bg-blue-500 text-white hover:bg-white"
           >
-            <Input placeholder="Enter your full name.." />
-          </Form.Item>
-          <Form.Item
-            rules={[
-              {
-                required: true,
-                type: "email",
-                message: "Please enter a valid email",
-              },
-            ]}
-            label="Email"
-            name="your_name"
-          >
-            <Input placeholder="Enter your email.." />
-          </Form.Item>
-          <Form.Item
-            rules={[
-              {
-                required: true,
-                message: "Please enter your address",
-              },
-            ]}
-            label="Address"
-            name="your_address"
-          >
-            <Input placeholder="Enter your full address.." />
-          </Form.Item>
-          <Form.Item>
-            <Checkbox defaultChecked disabled>
-              Cash on Delivery
-            </Checkbox>
-          </Form.Item>
-          <Typography.Paragraph type="secondary">
-            More methods coming soon
-          </Typography.Paragraph>
-          <Button type="primary" className="bg-blue-500" htmlType="submit">
-            {" "}
-            Confirm Order
+            Checkout Your Cart
           </Button>
-        </Form>
-      </Drawer> */}
+        )}
+      </Drawer>
     </div>
   );
 };

@@ -14,16 +14,25 @@ import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { CartContext } from "../../Provider/CartProvider";
 import { AudioMutedOutlined, AudioOutlined } from "@ant-design/icons";
+import { Navigate, useNavigate } from "react-router-dom";
+import { FaShare } from "react-icons/fa";
+import { AiOutlineShareAlt } from "react-icons/ai";
+import { useUser } from "@clerk/clerk-react";
 
 function AddToCartButton({ item }) {
   const { cartItems, addToCart, removeFromCart, setCartItems } =
     useContext(CartContext);
+  const { isSignedIn, user, isLoaded } = useUser();
   const [loading, setLoading] = useState(false);
   const addProductToCart = () => {
     setLoading(true);
-    addToCart(item);
-    // addToCart(item.id).then((res) => {
-    message.success(`${item.title} has been added to cart!`);
+    if (isSignedIn) {
+      addToCart(item);
+      // addToCart(item.id).then((res) => {
+      message.success(`${item.title} has been added to cart!`);
+    } else {
+      message.error(`Please Sign in to add ${item.title} to cart!`);
+    }
     setLoading(false);
     // });
   };
@@ -42,6 +51,7 @@ function AddToCartButton({ item }) {
 
 const ProductCard = ({ product }) => {
   const [speaking, setSpeaking] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <Badge.Ribbon
@@ -77,13 +87,35 @@ const ProductCard = ({ product }) => {
                   ).toFixed(2)}
                 </Typography.Text>
               </Typography.Paragraph>
-              <span className="cursor-pointer">
+              <span className="cursor-pointer flex items-center justify-center gap-4">
                 {speaking ? <AudioMutedOutlined /> : <AudioOutlined />}
+                <span className="cursor-pointer">
+                  <AiOutlineShareAlt
+                    onClick={() =>
+                      navigator.clipboard
+                        .writeText(
+                          `https://ondc-rouge.vercel.app/product/${product.id}`
+                        )
+                        .then(() => {
+                          message.success(
+                            `${product.title} has copied successfully!`
+                          );
+                          setTimeout(() => {
+                            message.destroy();
+                          }, 3000); // 3000 milliseconds = 3 seconds
+                        })
+                    }
+                  />
+                </span>
               </span>
             </div>
           }
           description={
             <Typography.Paragraph
+              onClick={() => {
+                navigate(`/product/${product.id}`);
+              }}
+              className="cursor-pointer"
               ellipsis={{ rows: 2, expandable: true, symbol: "more" }}
             >
               {product.description}

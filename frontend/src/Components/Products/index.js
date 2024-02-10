@@ -18,21 +18,54 @@ function Products() {
   const [loading, setLoading] = useState(false);
   const param = useParams();
   const [items, setItems] = useState([]);
+  const [filteredItems, setFilteredItems] = useState([]);
+  const [filters, setFilters] = useState([]);
+
   const [sortOrder, setSortOrder] = useState("az");
-  const options = [];
-  for (let i = 10; i < 36; i++) {
-    options.push({
-      label: i.toString(36) + i,
-      value: i.toString(36) + i,
-    });
-  }
+  const options = [
+    "smartphones",
+    "laptops",
+    "fragrances",
+    "skincare",
+    "groceries",
+    "home-decoration",
+    "furniture",
+    "tops",
+    "womens-dresses",
+    "womens-shoes",
+    "mens-shirts",
+    "mens-shoes",
+    "mens-watches",
+    "womens-watches",
+    "womens-bags",
+    "womens-jewellery",
+    "sunglasses",
+    "automotive",
+    "motorcycle",
+    "lighting",
+  ].map((option, index) => ({
+    label: option,
+    value: option,
+  }));
   const [value, setValue] = useState(1);
   const onChange = (e) => {
-    console.log("radio checked", e.target.value);
-    setValue(e.target.value);
+    console.log("radio checked", e);
+    setValue(e);
   };
+
+  const getFilteredItems = (value) => {
+    if (value?.value?.length === 0) {
+      setFilteredItems(items);
+    }
+    setFilteredItems(
+      items.filter((item) => value?.value?.includes(item.category))
+    );
+  };
+
   const handleChange = (value) => {
-    console.log(`selected ${value}`);
+    setFilters(value);
+    getFilteredItems({ value });
+    setSortOrder("az"); //
   };
 
   useEffect(() => {
@@ -47,7 +80,7 @@ function Products() {
   }, [param]);
 
   const getSortedItems = () => {
-    const sortedItems = [...items];
+    const sortedItems = filters.length === 0 ? [...items] : [...filteredItems];
     sortedItems.sort((a, b) => {
       const aLowerCaseTitle = a.title.toLowerCase();
       const bLowerCaseTitle = b.title.toLowerCase();
@@ -72,6 +105,7 @@ function Products() {
     });
     return sortedItems;
   };
+  const formatter = (value) => `${value * 50 + 10}`;
 
   return (
     <div className="flex">
@@ -79,30 +113,7 @@ function Products() {
         <div className="text-xl font-bold mb-2 border-b border-gray-400">
           Featured
         </div>
-        {/* <Select
-          onChange={(value) => {
-            setSortOrder(value);
-          }}
-          defaultValue={"az"}
-          options={[
-            {
-              label: "Alphabetically a-z",
-              value: "az",
-            },
-            {
-              label: "Alphabetically z-a",
-              value: "za",
-            },
-            {
-              label: "Price Low to High",
-              value: "lowHigh",
-            },
-            {
-              label: "Price High to Low",
-              value: "highLow",
-            },
-          ]}
-        ></Select> */}
+
         <Radio.Group
           onChange={(e) => {
             setSortOrder(e.target.value);
@@ -114,18 +125,6 @@ function Products() {
             <Radio value="za">Alphabetically z-a</Radio>
             <Radio value="lowHigh">Price Low to High</Radio>
             <Radio value="highLow">Price High to Low</Radio>
-
-            {/* <Radio value={4}>
-              More...
-              {value === 4 ? (
-                <Input
-                  style={{
-                    width: 100,
-                    marginLeft: 10,
-                  }}
-                />
-              ) : null}
-            </Radio> */}
           </Space>
         </Radio.Group>
         <div className="text-xl mt-5 font-bold mb-2 border-b border-gray-400">
@@ -138,14 +137,18 @@ function Products() {
             width: "100%",
           }}
           placeholder="Please select"
-          defaultValue={["a10", "c12"]}
+          defaultValue={["All"]}
           onChange={handleChange}
           options={options}
         />
         <div className="text-xl mt-5 font-bold mb-2 border-b border-gray-400">
           Price
         </div>
-        <Slider />
+        <div className="flex justify-between">
+          <div>$10</div>
+          <div>$5,000</div>
+        </div>
+        <Slider tooltip={{ formatter }} onChange={onChange} />
       </div>
       <div>
         <List

@@ -1,12 +1,16 @@
 import React from "react";
 import { AiOutlineInstagram } from "react-icons/ai";
 import { FaFacebookF, FaTwitter, FaGithub } from "react-icons/fa";
+import QRcode from "../QRcode";
 
 const Footer = () => {
   return (
     <div className="flex justify-center w-full mt-10">
-      <div className="bg-blue-400 text-white rounded-t-2xl pt-4 md:pl-16 w-full">
-        <div className="grid sm:grid-cols-2 w-full">
+      <div className="bg-gradient-to-br from-blue-600 text-white rounded-t-2xl pt-4 md:pl-16 w-full">
+        <div className="grid sm:grid-cols-3 w-full">
+          <div className="w-max">
+            <QRcode />
+          </div>
           <div className="p-4 ">
             <div className="grid grid-cols-2">
               <div>
@@ -34,7 +38,7 @@ const Footer = () => {
 
           <div className="flex justify-center flex-col items-center">
             <p className="text-sm font-bold text-center m-1">
-              Sign Up for Crypto News
+              Sign Up for Daily Updates
             </p>
             <form className="">
               <input
@@ -46,7 +50,7 @@ const Footer = () => {
                 SignUp
               </button>
             </form>
-            <div className="flex justify-around w-[50%] mt-2 text-xl cursor-pointer">
+            <div className="flex justify-around w-[50%] mt-2 text-blue-700 text-xl cursor-pointer">
               <AiOutlineInstagram />
               <FaTwitter />
               <FaFacebookF />
@@ -54,7 +58,9 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        <p className="text-center text-xs py-4">Powered by Coin Gecko</p>
+        <p className="text-center text-blue-600 py-4">
+          Created by Team CypherTech
+        </p>
       </div>
     </div>
   );

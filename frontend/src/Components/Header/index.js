@@ -1,11 +1,17 @@
-import { HomeFilled, UserOutlined } from "@ant-design/icons";
+import { HomeFilled, ThunderboltFilled, UserOutlined } from "@ant-design/icons";
 import { Menu } from "antd";
 import { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, redirect, useNavigate } from "react-router-dom";
 import { getCart } from "../../API";
 import { ThemeContext } from "../../Provider/ThemeProvider";
 import AutoCompleteSearch from "../Autocomplete";
 import Cart from "../Cart";
+import {
+  SignInButton,
+  SignOutButton,
+  SignedIn,
+  SignedOut,
+} from "@clerk/clerk-react";
 
 function AppHeader() {
   const navigate = useNavigate();
@@ -80,15 +86,23 @@ function AppHeader() {
         <span>
           <AutoCompleteSearch />
         </span>
-        <span className="text-2xl italic">SuperStore</span>
+        <span className="text-2xl italic">
+          <ThunderboltFilled /> SuperStore
+        </span>
       </div>
-      {/* <div className="flex justify-between items-center gap-6"> */}
-      <span className="flex gap-7 justify-center items-center">
-        <Cart />
-        <Link to="/profile">
-          <UserOutlined className="text-xl" />
-        </Link>
-      </span>
+      <SignedIn>
+        {/* <div className="flex justify-between items-center gap-6"> */}
+        <span className="flex gap-7 justify-center items-center">
+          <Cart />
+          <Link to="/profile">
+            <UserOutlined className="text-xl" />
+          </Link>
+          <SignOutButton signOutCallback={() => redirect("/")} />
+        </span>
+      </SignedIn>
+      <SignedOut>
+        <SignInButton />
+      </SignedOut>
       {/* <Switch
           checked={theme === "dark"}
           onChange={toggleTheme}

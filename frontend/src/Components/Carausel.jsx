@@ -1,7 +1,7 @@
 import React from "react";
 import { Badge, Carousel } from "antd";
 const ImageCarousel = ({ items }) => (
-  <Carousel autoplay>
+  <Carousel lazyLoad="progressive" autoplay>
     {items.map((item, index) => (
       <Badge.Ribbon
         className="translate-x-[-10px] text-3xl items-end max-w-[200px] p-2 pl-5"
